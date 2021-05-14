@@ -1,0 +1,5 @@
+pip install djangorestframework
+
+pip install psycopyg2
+
+pip install coverage
