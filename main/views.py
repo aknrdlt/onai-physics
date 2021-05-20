@@ -1,78 +1,48 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework import generics
+from rest_framework import mixins
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.generics import ListCreateAPIView, CreateAPIView
+from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from main.models import *
 from main.serializers import TopicSerializer
 
 
-@api_view(['GET'])
-def apiOverview(request):
-    api_urls = {
-        'Topics': '/topic-list/',
-        'Topic': '/topic/<str:pk>',
-        'Create': '/topic-create/',
-        'Update': '/topic-update/<str:pk>',
-        'Delete': '/topic-delete/'
-    }
-    return Response(api_urls)
+class TopicList(generics.GenericAPIView, mixins.ListModelMixin,):
+    # permission_classes = [IsAdminUser]
+    # renderer_classes = [JSONRenderer]
+    serializer_class = TopicSerializer
+    queryset = Topic.objects.all()
+
+    tags = list(queryset.values_list('Tag', flat=True))
+    print(tags[0])
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
-class TopicList(generics.ListCreateAPIView):
-    topics = Topic.objects.all()
-    serializer = TopicSerializer
-    permission_classes = [IsAdminUser]
+class TopicDetail(generics.GenericAPIView, mixins.RetrieveModelMixin,):
+    serializer_class = TopicSerializer
+    queryset = Topic.objects.all()
 
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = TopicSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
-class TopicDetail(generics.RetrieveDestroyAPIView):
-    topics = Topic.objects.all()
-    serializer = TopicSerializer
-
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = TopicSerializer(queryset, many=False)
-        return Response(serializer.data)
+class TopicCreate(generics.CreateAPIView):
+    queryset = Topic.objects.all()
+    serializer_class = TopicSerializer
 
 
-@api_view(['POST'])
-def topicCreate(request):
-    serializer = TopicSerializer(data=request.data)
-
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response(serializer.data)
+class TopicUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Topic.objects.all()
+    serializer_class = TopicSerializer
 
 
-@api_view(['POST'])
-def topicUpdate(request, pk):
-    try:
-        topic = Topic.objects.get(id=pk)
-    except Topic.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class TopicDelete(generics.RetrieveDestroyAPIView):
+    queryset = Topic.objects.all()
+    serializer_class = TopicSerializer
 
-    serializer = TopicSerializer(instance=topic, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response(serializer.data)
-
-
-@api_view(['DELETE'])
-def topicDelete(request, pk):
-    try:
-        topic = Topic.objects.get(id=pk)
-    except Topic.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    topic.delete()
-    return Response('Topic successfully deleted!')
