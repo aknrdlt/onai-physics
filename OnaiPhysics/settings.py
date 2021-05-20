@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-s%)_51rv$#e^*)nu27jdtf@g!)p$phgw=9ip%dn$h380#3a=9o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['onai-physics.herokuapp.com', '127.0.0.1']
 
 # Application definition
 

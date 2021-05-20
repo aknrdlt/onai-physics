@@ -1,0 +1,1 @@
+web: gunicorn OnaiPhysics.wsgi --log-file -
