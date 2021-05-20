@@ -17,9 +17,6 @@ class TopicList(generics.GenericAPIView, mixins.ListModelMixin,):
     serializer_class = TopicSerializer
     queryset = Topic.objects.all()
 
-    tags = list(queryset.values_list('Tag', flat=True))
-    print(tags[0])
-
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
