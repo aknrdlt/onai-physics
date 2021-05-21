@@ -27,7 +27,7 @@ DEBUG = True
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-ALLOWED_HOSTS = ['onai-physics.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['sheltered-citadel-02190.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
