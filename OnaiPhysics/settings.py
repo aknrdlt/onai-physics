@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'OnaiPhysics.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DEMO_TEST',
-        'USER': 'postgres',
-        'PASSWORD': 'psg06032002',
-        'HOST': 'localhost',
-        'PORT': '1234'
+        'NAME': 'd2sv9v5f87oqpc',
+        'USER': 'igtuspaqsecsfo',
+        'PASSWORD': '2fcc1b83e5a7c0314701d86310caa606516654ca4388d3bf67cc937b4e17a0aa',
+        'HOST': 'ec2-54-220-35-19.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432'
     }
 }
 
