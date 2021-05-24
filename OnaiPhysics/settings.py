@@ -10,24 +10,35 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import json
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+
+def get_secret(setting, secrets=secrets):
+    """Get secret setting or fail with ImproperlyConfigured"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        raise ImproperlyConfigured("Set the {} setting".format(setting))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s%)_51rv$#e^*)nu27jdtf@g!)p$phgw=9ip%dn$h380#3a=9o'
-
+SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-ALLOWED_HOSTS = ['onai-physics.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['onai-physics.herokuapp.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -77,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'OnaiPhysics.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -85,14 +95,13 @@ WSGI_APPLICATION = 'OnaiPhysics.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd2sv9v5f87oqpc',
-        'USER': 'igtuspaqsecsfo',
-        'PASSWORD': '2fcc1b83e5a7c0314701d86310caa606516654ca4388d3bf67cc937b4e17a0aa',
-        'HOST': 'ec2-54-220-35-19.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432'
+        'NAME': get_secret('NAME'),
+        'USER': get_secret('USER'),
+        'PASSWORD': get_secret('DB_PASSWORD'),
+        'HOST': get_secret('HOST'),
+        'PORT': get_secret('PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -112,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -125,7 +133,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

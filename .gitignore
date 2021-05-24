@@ -136,3 +136,8 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+*.py[co]
+*.sw[po]
+*~
+/secrets.json
