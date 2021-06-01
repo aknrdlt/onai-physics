@@ -140,4 +140,4 @@ cython_debug/
 *.py[co]
 *.sw[po]
 *~
-/secrets.json
+secrets.json
